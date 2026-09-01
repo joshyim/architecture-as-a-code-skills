@@ -6,10 +6,12 @@ Agentic AI skills for generating and maintaining interactive **C4 model architec
 
 ## Overview
 
-This repository provides skills to initialize and maintain architecture-as-code in software repositories:
+This repository provides skills and rules to initialize and maintain architecture-as-code across multiple AI agent environments (Antigravity, Claude Code, Cursor, Windsurf, Copilot, etc.):
 
-- **[`arch-c4-init`](./arch-c4-init/SKILL.md)**: Initializes a complete C4 Structurizr DSL workspace via a structured architecture interview, generating personas, containers, components, relationships, views, styles, and documentation.
-- **[`arch-c4-update`](./arch-c4-update/SKILL.md)**: Updates and synchronizes existing Structurizr DSL files with codebase changes, preserving stable identifiers and manual layouts.
+- **[`arch-c4-init`](./skills/arch-c4-init/SKILL.md)**: Initializes a complete C4 Structurizr DSL workspace via a structured architecture interview, generating personas, containers, components, relationships, views, styles, and documentation.
+- **[`arch-c4-update`](./skills/arch-c4-update/SKILL.md)**: Updates and synchronizes existing Structurizr DSL files with codebase changes, preserving stable identifiers and manual layouts.
+- **[`rules/c4-dsl-standards.md`](./rules/c4-dsl-standards.md)**: Structurizr DSL authoring guidelines (camelCase identifiers, stable IDs, manual layout preservation).
+- **[`rules/architecture-sync.md`](./rules/architecture-sync.md)**: Workflow rule triggering C4 model updates when code is ready for review, unit testing, commit, or PR generation.
 
 ---
 
@@ -24,6 +26,60 @@ C4_DESTINATION=docs/architecture
 ```
 
 If `C4_DESTINATION` is not configured, the skills will prompt you for the destination path.
+
+---
+
+## Installation
+
+You can install and use these skills via either **`uv` / `pip`** (no manual cloning) or as a **Git Submodule** across Antigravity, Claude Code, Cursor, Windsurf, and other agent tools.
+
+### Option 1: Install via `uv` or `pip` (Recommended — Zero Cloning)
+
+Run the installer directly from your project root using `uvx`:
+
+```bash
+# Install for Antigravity (.agents/plugins/ by default):
+uvx --from git+https://github.com/joshyim/architecture-as-a-code-skills arch-c4 install
+
+# Install for Claude Code (.claude/skills/):
+uvx --from git+https://github.com/joshyim/architecture-as-a-code-skills arch-c4 install --target claude
+
+# Install for Cursor / Windsurf (.cursor/rules/ and .cursor/skills/):
+uvx --from git+https://github.com/joshyim/architecture-as-a-code-skills arch-c4 install --target cursor
+
+# Install globally across all projects on your machine:
+uvx --from git+https://github.com/joshyim/architecture-as-a-code-skills arch-c4 install --global
+```
+
+Or install via standard `pip`:
+
+```bash
+pip install git+https://github.com/joshyim/architecture-as-a-code-skills
+arch-c4 install
+```
+
+---
+
+### Option 2: Install as a Git Submodule (Project-Locked)
+
+To lock these skills directly into your repository's version control:
+
+**For Antigravity:**
+```bash
+git submodule add https://github.com/joshyim/architecture-as-a-code-skills .agents/plugins/architecture-as-code
+```
+*Antigravity automatically discovers `plugin.json` and loads both skills and rules immediately.*
+
+**For Claude Code:**
+```bash
+git submodule add https://github.com/joshyim/architecture-as-a-code-skills .claude/skills/architecture-as-code
+```
+
+**For Cursor / Windsurf / Other Tools:**
+```bash
+git submodule add https://github.com/joshyim/architecture-as-a-code-skills tools/architecture-as-code
+# Then link or reference rules/c4-dsl-standards.md in your .cursorrules or system instructions.
+```
 
 ---
 
@@ -71,17 +127,21 @@ Structurizr Local lets you view, navigate, and interactively edit your C4 archit
 
 ---
 
-### Step 1: Install / Pull Structurizr Local via Docker
+### Quick Launch via CLI or Helper Script
 
-Pull the official Structurizr container image:
-
+If you installed via `arch-c4`:
 ```bash
-docker pull structurizr/structurizr
+arch-c4 serve
+```
+
+Or using the included helper script:
+```bash
+./scripts/run-structurizr.sh
 ```
 
 ---
 
-### Step 2: Point Generated DSL Files to Docker Instance
+### Manual Launch with Docker
 
 Mount the folder containing your generated `workspace.dsl` into `/usr/local/structurizr` in the container.
 
@@ -98,14 +158,6 @@ docker run -it --rm -p 8080:8080 \
 ```bash
 docker run -it --rm -p 8080:8080 \
   -v "$(pwd)/docs/architecture:/usr/local/structurizr" \
-  structurizr/structurizr local
-```
-
-**Example** (using `structurizr_data`):
-
-```bash
-docker run -it --rm -p 8080:8080 \
-  -v "$(pwd)/structurizr_data:/usr/local/structurizr" \
   structurizr/structurizr local
 ```
 
@@ -135,6 +187,13 @@ Once the container is running:
 To validate the syntax of your Structurizr DSL files without starting the web server:
 
 ```bash
+# Using CLI:
+arch-c4 validate
+
+# Or using helper script:
+./scripts/validate-dsl.sh
+
+# Or directly via Docker:
 docker run --rm \
   -v "$(pwd)/<destination-folder>:/usr/local/structurizr" \
   structurizr/structurizr validate -w workspace.dsl

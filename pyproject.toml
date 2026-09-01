@@ -1,0 +1,43 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "architecture-as-code-skills"
+version = "1.0.0"
+description = "Universal Architecture-as-Code skills and C4 modeling tools for AI agents"
+readme = "README.md"
+requires-python = ">=3.10"
+license = "MIT"
+keywords = [
+    "c4-model",
+    "structurizr",
+    "architecture-as-code",
+    "ai-agent",
+    "agent-skills",
+    "antigravity",
+    "claude-code",
+    "cursor"
+]
+dependencies = []
+
+[project.scripts]
+arch-c4 = "arch_c4.cli:main"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/arch_c4"]
+
+[tool.hatch.build.targets.wheel.force-include]
+"skills" = "arch_c4/skills"
+"rules" = "arch_c4/rules"
+"plugin.json" = "arch_c4/plugin.json"
+
+[tool.hatch.build.targets.sdist]
+include = [
+    "src/arch_c4",
+    "skills",
+    "rules",
+    "plugin.json",
+    "README.md",
+    "pyproject.toml"
+]

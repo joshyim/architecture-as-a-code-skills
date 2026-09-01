@@ -1,0 +1,7 @@
+{
+  "name": "architecture-as-code",
+  "version": "1.0.0",
+  "description": "Universal Architecture-as-Code and C4 modeling toolkit using Structurizr DSL.",
+  "skills": "./skills",
+  "rules": "./rules"
+}

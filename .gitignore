@@ -1,2 +1,10 @@
 # File Systems
 .DS_Store
+
+# Python & Build Artifacts
+dist/
+build/
+*.egg-info/
+__pycache__/
+*.pyc
+.venv/
