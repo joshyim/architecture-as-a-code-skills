@@ -10,6 +10,8 @@ This repository provides skills and rules to initialize and maintain architectur
 
 - **[`arch-c4-init`](./skills/arch-c4-init/SKILL.md)**: Initializes a complete C4 Structurizr DSL workspace via a structured architecture interview, generating personas, containers, components, relationships, views, styles, and documentation.
 - **[`arch-c4-update`](./skills/arch-c4-update/SKILL.md)**: Updates and synchronizes existing Structurizr DSL files with codebase changes, preserving stable identifiers and manual layouts.
+- **[`arch-db-diagram-init`](./skills/arch-db-diagram-init/SKILL.md)**: Initializes modular database Entity-Relationship (ER) diagrams using Mermaid, generating tables-only, domain-specific, and full-detail schemas with a single source of truth in `overview.md`.
+- **[`fn-domain-discovery`](./skills/fn-domain-discovery/SKILL.md)**: Discovers and partitions cohesive system domains and bounded contexts by analyzing database schema topology, migration epics, and code outlines with `cocoindex-code` (`ccc`).
 - **[`rules/c4-dsl-standards.md`](./rules/c4-dsl-standards.md)**: Structurizr DSL authoring guidelines (camelCase identifiers, stable IDs, manual layout preservation).
 - **[`rules/architecture-sync.md`](./rules/architecture-sync.md)**: Workflow rule triggering C4 model updates when code is ready for review, unit testing, commit, or PR generation.
 
