@@ -1,7 +1,11 @@
 ---
 name: arch-db-diagram-init
 description: Initialize and generate modular database Entity-Relationship (ER) diagrams using Mermaid in architecture/db-diagrams/ (or configured DB_DESTINATION). Analyzes database migrations, ORM models, or schema definitions to produce a single-source-of-truth structure with high-level Tables-Only ER, domain-specific ERs, complete detailed ER, data dictionary, and indexing reference in overview.md.
+license: Apache-2.0
 compatibility: Compatible with any Markdown and Mermaid rendering environment (Antigravity IDE, GitHub, VS Code, Obsidian, Notion, CI/CD).
+metadata:
+  author: architecture-as-code
+  version: "1.0.0"
 ---
 
 # arch-db-diagram-init

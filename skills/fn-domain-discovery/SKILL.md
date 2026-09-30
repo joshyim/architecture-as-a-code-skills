@@ -1,12 +1,16 @@
 ---
 name: fn-domain-discovery
-description: Analyzes database schemas, migration epics, foreign key topologies, and application code outlines using cocoindex-code (ccc) to systematically discover and partition cohesive architectural domains and bounded contexts for system modeling and ER diagrams.
-compatibility: Compatible with any codebase indexed by cocoindex-code (ccc) and standard RDBMS/ORM configurations.
+description: Systematically discovers and partitions cohesive architectural domains and bounded contexts by analyzing database schema topology, migration epics, and application code outlines with cocoindex-code (ccc). Use when grouping database tables into domain diagrams, discovering bounded contexts, or modularizing system architecture.
+license: Apache-2.0
+compatibility: Requires cocoindex-code (ccc) for semantic code search; compatible with any RDBMS or ORM schema.
+metadata:
+  author: architecture-as-code
+  version: "1.0.0"
 ---
 
 # fn-domain-discovery
 
-Systematically discovers, partitions, and aligns architectural **domains and bounded contexts** across a software system. 
+Systematically discovers, partitions, and aligns architectural **domains and bounded contexts** across a software system.
 
 This skill bridges the gap between database schemas and application code. It analyzes database migration history, foreign key graph topologies, and **semantic code outlines via `cocoindex-code` (`ccc`)** to determine cohesive domain boundaries, preventing information overload in architecture diagrams, documentation, and data models.
 
@@ -164,3 +168,38 @@ Does this partitioning accurately represent your system's architecture before we
 ```
 
 Once confirmed, feed the resulting domain structure directly into [`arch-db-diagram-init`](../arch-db-diagram-init/SKILL.md) to generate the modular `.mmd` diagrams and `overview.md`.
+
+---
+
+## Examples & Edge Cases
+
+### Example Input & Output
+
+#### Input:
+- Schema source: `backend/sql/001_eval_tasks.sql` through `012_cluster_schedule.sql`
+- Codebase index: `ccc` index covering FastAPI backend
+
+#### Output:
+- 5 discovered domains with mapped code boundaries:
+  1. `Multi-Tenancy & Access Control`: `organizations`, `api_keys`, `services` (Scoped via auth middleware)
+  2. `Observability & Telemetry`: `traces`, `spans`, `tasks`, `eval_runs` (OTel ingestion routes)
+  3. `Semantic Clustering`: `concept_embeddings`, `clustering_runs`, `cluster_records`, `cluster_trace_assignments` (Ward clustering & Vertex AI embedding engine)
+  4. `Candidate Selection`: `candidate_sets`, `candidate_set_traces`, `cluster_labels`, `cluster_keyword_tags` (Candidate curation API & UI)
+  5. `Migrations & Operations`: `schema_migrations` (DDL migration runner)
+
+---
+
+### Common Edge Cases
+
+1. **Ubiquitous Scoping Tables (e.g. `organizations`, `tenants`, `accounts`):**
+   - *Problem:* When every table has an `org_id` foreign key, treating `organizations` as the parent of everything creates a spiderweb diagram.
+   - *Resolution:* Place `organizations` in its own Identity & Access Management domain. In other domain diagrams, represent `organizations ||--o{ table : scopes` as a context boundary or omit the tenant line if standard.
+2. **Orphan Tables without Foreign Keys:**
+   - *Problem:* Tables like `schema_migrations`, `audit_logs`, or key-value config tables have no foreign keys.
+   - *Resolution:* Group them into an "Operations & System", "Ledger", or "Infrastructure" domain. In Mermaid, always declare them with empty braces `table_name {}` so they render correctly.
+3. **Circular Foreign Key References:**
+   - *Problem:* Table A references Table B, and Table B has an optional pointer to Table A (e.g., `traces` has `eval_run_id`, while `eval_runs` tracks `last_trace_id`).
+   - *Resolution:* This almost always indicates that Table A and Table B belong to the same aggregate domain. Group them together and document the circular dependency.
+4. **Stale or Missing `ccc` Index:**
+   - *Problem:* `ccc search` returns no results or indicates the index is missing.
+   - *Resolution:* Run `ccc init` if uninitialized, followed by `ccc index` to build the semantic outline before searching.

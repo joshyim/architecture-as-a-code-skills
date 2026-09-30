@@ -1,7 +1,17 @@
 {
+  "$schema": "https://agent-plugins.org/schemas/1.0.0/plugin.schema.json",
   "name": "architecture-as-code",
   "version": "1.0.0",
-  "description": "Universal Architecture-as-Code and C4 modeling toolkit using Structurizr DSL.",
+  "description": "Universal Architecture-as-Code, C4 modeling, and database domain discovery toolkit.",
+  "license": "Apache-2.0",
+  "keywords": [
+    "architecture",
+    "c4-model",
+    "structurizr",
+    "mermaid",
+    "database-diagrams",
+    "domain-discovery"
+  ],
   "skills": "./skills",
   "rules": "./rules"
 }
